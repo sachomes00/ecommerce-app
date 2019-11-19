@@ -1,5 +1,5 @@
 // Replace with your Stripe API key
-const stripe = Stripe('pk_test_IhA42YaZImVSktyA3OTvzJwL00QjCf63iC');
+const stripe = Stripe(process.env.STRIPE_API_KEY);
 
 const elements = stripe.elements();
 

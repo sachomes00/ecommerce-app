@@ -40,6 +40,9 @@
       </table>
     </div>
     <div class="row">
+      <p><%= link_to "Back to products page", products_path %></p>
+    </div>
+    <div class="row">
       <h4>Sub total: <%= number_to_currency(@shopping_cart.subtotal) %></h4>
     </div>
     <div class="row">
