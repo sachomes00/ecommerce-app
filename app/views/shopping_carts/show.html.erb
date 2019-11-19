@@ -1,0 +1,51 @@
+  <% if @shopping_cart.line_items.any? %>
+    <h2>Your shopping cart</h2>
+    <div class="table">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total Price</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @shopping_cart.line_items.each do |line_item| %>
+            <tr>
+              <td>
+                <%= line_item.product.name %>
+              </td>
+              <td>
+                <%= number_to_currency(line_item.product.price) %>
+              </td>
+              <td>
+                <%= line_item.quantity %>
+              </td>
+              <td>
+                <%= number_to_currency(line_item.total_price) %>
+              </td>
+              <td>
+                <%= link_to "+1", line_item_path(id: line_item, add: true), method: :patch, class: 'btn btn-primary' %>
+                <% if line_item.quantity > 1 %>
+                  <%= link_to "-1", line_item_path(id: line_item), method: :patch, class: 'btn btn-primary' %>
+                <% end %>
+                <%= link_to "Remove item", line_item_path(line_item), method: :delete, class: 'btn btn-danger' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <h4>Sub total: <%= number_to_currency(@shopping_cart.subtotal) %></h4>
+    </div>
+    <div class="row">
+      <%= link_to "Checkout", new_order_path, class: 'btn btn-primary' %><br />
+      <%= link_to "Empty cart", shopping_cart_path(@current_shopping_cart), method: :delete, class: "btn btn-danger" %>
+    </div>
+  <% else %>
+    <p>Your shopping cart is empty. Add some <%= link_to "products", products_path %> first to check out and create an order.</p>
+  <% end %>

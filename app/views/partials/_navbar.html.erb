@@ -1,0 +1,10 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <%= link_to 'Travel Store', root_path, class: "navbar-brand" %>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <%= link_to 'Browse Products', products_path, class: "nav-item nav-link" %>
+      <%= link_to 'Past Orders', orders_path, class: "nav-item nav-link" %>
+      <%= link_to 'View Shopping Cart', shopping_cart_path(@current_shopping_cart), class: "nav-item nav-link" %>
+    </div>
+  </div>
+</nav>
