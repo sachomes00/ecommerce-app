@@ -6,14 +6,14 @@ class OrdersController < ApplicationController
   def new
     if @current_shopping_cart.line_items.any?
       @order = Order.new
+      @payment_intent = StripeService.process(@current_shopping_cart)
     else
       redirect_to shopping_cart_path(@current_shopping_cart)
     end
   end
 
   def create
-    charge = StripeService.process(params[:stripeToken], @current_shopping_cart)
-    @order = OrderService.process(order_params.merge(charge_id: charge.id), @current_shopping_cart)
+    @order = OrderService.process(order_params.merge(payment_intent_id: params[:paymentIntentId]), @current_shopping_cart)
 
     if @order.save
       ShoppingCart.destroy(session[:shopping_cart_id])
