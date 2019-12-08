@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
   end
 
   def create
-    charge = StripeService.process(params[:stripeToken], @current_shopping_cart)
+    charge = StripeService.process(params, @current_shopping_cart)
     @order = OrderService.process(order_params.merge(charge_id: charge.id), @current_shopping_cart)
 
     if @order.save
