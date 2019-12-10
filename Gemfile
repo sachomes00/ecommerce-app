@@ -5,6 +5,7 @@ ruby '2.6.3'
 
 gem 'bootstrap', '~> 4.3.1'
 gem 'stripe'
+gem 'devise'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.1'
