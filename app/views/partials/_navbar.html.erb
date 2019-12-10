@@ -4,6 +4,9 @@
     <div class="navbar-nav">
       <%= link_to 'Browse Products', products_path, class: "nav-item nav-link" %>
       <%= link_to 'View Shopping Cart', shopping_cart_path(@current_shopping_cart), class: "nav-item nav-link" %>
+      <% if current_user %>
+        <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: "nav-item nav-link" %>
+      <% end %>
     </div>
   </div>
 </nav>
