@@ -13,14 +13,13 @@ class StripeService
   end
 
   def process
-    customer = Customer.find_by(email: @customer_email)
-    if customer.nil?
-      raise "customer not found"
+    if current_user.stripe_customer_id.nil?
+      customer = Stripe::Customer.create({
         source: @token,
         email: @customer_email,
       })
 
-      Customer.create(name: @customer_name, email: @customer_email, customer_id: customer.id)
+      User.update(stripe_customer_id: customer.id)
 
       Stripe::Charge.create({
         amount: @current_shopping_cart.subtotal_cents,
@@ -31,7 +30,7 @@ class StripeService
       Stripe::Charge.create({
         amount: @current_shopping_cart.subtotal_cents,
         currency: 'usd',
-        customer: customer.stripe_id,
+        customer: user.stripe_customer_id,
       })
     end
 
