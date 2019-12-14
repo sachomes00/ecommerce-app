@@ -13,14 +13,16 @@ class OrdersController < ApplicationController
 
   def create
     charge = StripeService.process(params[:stripeToken], @current_shopping_cart)
-    @order = OrderService.process(order_params.merge(charge_id: charge.id), @current_shopping_cart)
+    @order = OrderService.process(order_params.merge(charge_id: charge.id), @current_shopping_cart) if charge.try(:id)
 
-    if @order.save
+    if @order && @order.save
       ShoppingCart.destroy(session[:shopping_cart_id])
       session[:shopping_cart_id] = nil
       redirect_to order_path(@order)
     else
-      redirect_to shopping_cart_path(@current_shopping_cart)
+      flash.now[:error] = charge[:errors]
+      render action: "new"
+      # redirect_to shopping_cart_path(@current_shopping_cart)
     end
   end
 

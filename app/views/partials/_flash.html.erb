@@ -1,0 +1,20 @@
+
+<% flash.each do |key, value| %>
+  <div class="card">
+    <div class="alert alert-<%= key %>">
+      <button type="button" aria-hidden="true" class="close">x</button>
+      <span>
+      	<% if flash[:error].present? %>
+      		<h4>There were <%= flash[:error].count %> errors saving this record</h4>
+        	<ul>
+        	<% flash[:error].each do |value| %>
+        		<li><%= value %></li>
+        	<% end %>
+        	</ul>
+        <% else %>
+        	<%= value %>
+        <% end %>
+      </span>
+    </div>
+  </div>
+<% end %>
