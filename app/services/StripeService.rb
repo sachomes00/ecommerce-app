@@ -1,7 +1,7 @@
 class StripeService
   Stripe.api_key = ENV['STRIPE_API_SECRET_KEY']
 
-  def self.process(stripeToken, current_shopping_cart)
+  def self.process(stripeToken, current_shopping_cart, paymentMethod)
     new(stripeToken, current_shopping_cart).process
   end
 

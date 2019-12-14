@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  Stripe.api_key = ENV['STRIPE_API_SECRET_KEY']
+
   def show
     @order = Order.find(params[:id])
   end
@@ -6,13 +8,14 @@ class OrdersController < ApplicationController
   def new
     if @current_shopping_cart.line_items.any?
       @order = Order.new
+      @intent = Stripe::SetupIntent.create(usage: "on_session")
     else
       redirect_to shopping_cart_path(@current_shopping_cart)
     end
   end
 
   def create
-    charge = StripeService.process(params[:stripeToken], @current_shopping_cart)
+    charge = StripeService.process(params[:stripeToken], @current_shopping_cart, params[:paymentMethod])
     @order = OrderService.process(order_params.merge(charge_id: charge.id), @current_shopping_cart)
 
     if @order.save

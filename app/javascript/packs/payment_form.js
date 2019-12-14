@@ -1,5 +1,5 @@
 // Replace with your Stripe API key
-const stripe = Stripe(process.env.STRIPE_API_PUBLISHABLE_KEY);
+const stripe = Stripe('pk_test_CYMrYVdDzeol6VXWGHyMfRPF00j4qD6PjG');
 
 const elements = stripe.elements();
 
@@ -24,6 +24,35 @@ const style = {
 const card = elements.create("card", { style: style });
 card.mount("#card-element");
 
+var successMessage = document.getElementById('card-save-success')
+successMessage.style.display = "none"
+
+const cardholderName = document.getElementById('cardholder-name')
+const cardButton = document.getElementById('card-button')
+const clientSecret = cardButton.dataset.secret
+
+cardButton.addEventListener('click', function(ev) {
+  ev.preventDefault();
+  stripe.confirmCardSetup(
+    clientSecret,
+    {
+      payment_method: {
+        card: card,
+        billing_details: {name: cardholderName.value}
+      }
+    }
+  ).then(function(result) {
+    if (result.error) {
+
+    } else {
+      successMessage.style.display = "block"
+      paymentMethodHandler(result.setupIntent.payment_method)
+    }
+  })
+})
+
+
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
@@ -47,4 +76,18 @@ const stripeTokenHandler = (token) => {
   form.appendChild(hiddenInput);
 
   form.submit();
+}
+
+const paymentMethodHandler = (paymentMethod) => {
+  var myData = {
+    paymentMethod: paymentMethod,
+  }
+
+  $.ajax({
+    type: 'POST',
+    url: '/cards',
+    data: myData,
+    success: function(data, textStatus, jqXHR){},
+    error: function(jqXHR, textStatus, errorThrown){}
+  })
 }
