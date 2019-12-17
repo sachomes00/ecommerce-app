@@ -11,10 +11,10 @@ class StripeService
   end
 
   def process
-    Stripe::Charge.create({
-      amount: @current_shopping_cart.subtotal_cents,
-      currency: 'usd',
-      source: @token
-    })
+    # Stripe::Charge.create({
+    #   amount: @current_shopping_cart.subtotal_cents,
+    #   currency: 'usd',
+    #   source: @token
+    # })
   end
 end

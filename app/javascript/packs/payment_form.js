@@ -2,8 +2,8 @@
 const stripe = Stripe(process.env.STRIPE_API_PUBLISHABLE_KEY);
 
 const elements = stripe.elements();
-
 const form = document.getElementById('payment-form');
+const clientSecret = document.getElementById('client-secret').getAttribute('data-attribute')
 
 const style = {
   base: {
@@ -27,23 +27,41 @@ card.mount("#card-element");
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const {token, error} = await stripe.createToken(card);
+  stripe.confirmCardPayment(
+    clientSecret,
+    {
+      payment_method: {card: card}
+    }
+  ).then(function(result) {
+    if (result.error) {
+      // Display error.message in your UI.
+      console.log('Error: ', result.error)
+    } else {
+      // The payment has succeeded
+      // Display a success message
+      console.log('Success: ', result.paymentIntent)
 
-  if (error) {
-    const errorElement = document.getElementById('card-errors');
-    errorElement.textContent = error.message;
-    console.log("Stripe error: ", error.message)
-  } else {
-    stripeTokenHandler(token);
-  }
+      stripePaymentIntentHandler(result.paymentIntent.id)
+    }
+  });
+
+  // const {token, error} = await stripe.createToken(card);
+  //
+  // if (error) {
+  //   const errorElement = document.getElementById('card-errors');
+  //   errorElement.textContent = error.message;
+  //   console.log("Stripe error: ", error.message)
+  // } else {
+  //   stripeTokenHandler(token);
+  // }
 });
 
-const stripeTokenHandler = (token) => {
+const stripePaymentIntentHandler = (paymentIntentId) => {
   const form = document.getElementById('payment-form');
   const hiddenInput = document.createElement('input');
   hiddenInput.setAttribute('type', 'hidden');
-  hiddenInput.setAttribute('name', 'stripeToken');
-  hiddenInput.setAttribute('value', token.id);
+  hiddenInput.setAttribute('name', 'paymentIntentId');
+  hiddenInput.setAttribute('value', paymentIntentId);
   form.appendChild(hiddenInput);
 
   form.submit();
