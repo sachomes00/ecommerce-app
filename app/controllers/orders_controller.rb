@@ -19,7 +19,7 @@ class OrdersController < ApplicationController
 
   def create
     # charge = StripeService.process(params[:stripeToken], @current_shopping_cart)
-    @order = OrderService.process(order_params.merge(charge_id: params[:paymentIntentId]), @current_shopping_cart)
+    @order = OrderService.process(order_params.merge(charge_id: params[:paymentIntentId], payment_method: params[:paymentMethod]), @current_shopping_cart)
 
     if @order.save
       ShoppingCart.destroy(session[:shopping_cart_id])

@@ -27,6 +27,7 @@ card.mount("#card-element");
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  console.log('card =>', card)
   stripe.confirmCardPayment(
     clientSecret,
     {
@@ -39,9 +40,8 @@ form.addEventListener('submit', async (event) => {
     } else {
       // The payment has succeeded
       // Display a success message
-      console.log('Success: ', result.paymentIntent)
 
-      stripePaymentIntentHandler(result.paymentIntent.id)
+      stripePaymentIntentHandler(result.paymentIntent)
     }
   });
 
@@ -56,13 +56,23 @@ form.addEventListener('submit', async (event) => {
   // }
 });
 
-const stripePaymentIntentHandler = (paymentIntentId) => {
+const stripePaymentIntentHandler = (paymentIntent) => {
   const form = document.getElementById('payment-form');
-  const hiddenInput = document.createElement('input');
-  hiddenInput.setAttribute('type', 'hidden');
-  hiddenInput.setAttribute('name', 'paymentIntentId');
-  hiddenInput.setAttribute('value', paymentIntentId);
-  form.appendChild(hiddenInput);
+  console.log('paymentIntent =>', paymentIntent)
+
+  const paymentIntentInput = document.createElement('input');
+  const paymentMethodInput = document.createElement('input');
+
+  paymentIntentInput.setAttribute('type', 'hidden');
+  paymentIntentInput.setAttribute('name', 'paymentIntentId');
+  paymentIntentInput.setAttribute('value', paymentIntent.id);
+
+  paymentMethodInput.setAttribute('type', 'hidden');
+  paymentMethodInput.setAttribute('name', 'paymentMethod');
+  paymentMethodInput.setAttribute('value', paymentIntent.payment_method);
+
+  form.appendChild(paymentIntentInput);
+  form.appendChild(paymentMethodInput);
 
   form.submit();
 }

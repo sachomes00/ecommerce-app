@@ -13,4 +13,8 @@ class ShoppingCart < ApplicationRecord
   def subtotal_cents
     (subtotal * 100).to_i
   end
+
+  def includes_subscription?
+    line_items.map(&:product).select{|product| product.is_subscription}.any?
+  end
 end
