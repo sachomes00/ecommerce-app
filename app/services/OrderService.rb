@@ -29,7 +29,7 @@ class OrderService
         customer: customer.id,
         items: [
           {
-            plan: product.stripe_plan
+            plan: line_item.product.stripe_plan
           }
         ],
         expand: ['latest_invoice.payment_intent']

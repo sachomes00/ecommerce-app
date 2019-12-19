@@ -3,6 +3,7 @@ const stripe = Stripe(process.env.STRIPE_API_PUBLISHABLE_KEY);
 
 const elements = stripe.elements();
 const form = document.getElementById('payment-form');
+const email = document.getElementById('email').getAttribute('value');
 const clientSecret = document.getElementById('client-secret').getAttribute('data-attribute')
 
 const style = {
@@ -40,20 +41,20 @@ form.addEventListener('submit', async (event) => {
     } else {
       // The payment has succeeded
       // Display a success message
-
       stripePaymentIntentHandler(result.paymentIntent)
     }
   });
 
-  // const {token, error} = await stripe.createToken(card);
-  //
-  // if (error) {
-  //   const errorElement = document.getElementById('card-errors');
-  //   errorElement.textContent = error.message;
-  //   console.log("Stripe error: ", error.message)
-  // } else {
-  //   stripeTokenHandler(token);
-  // }
+  stripe.createPaymentMethod({
+    type: 'card',
+    card: card,
+    billing_details: {
+      email: email,
+    },
+  }).then(function(result) {
+    console.log('result payment =>', result)
+    stripePaymentMethodHandler(result.paymentMethod)
+  });
 });
 
 const stripePaymentIntentHandler = (paymentIntent) => {
@@ -61,18 +62,24 @@ const stripePaymentIntentHandler = (paymentIntent) => {
   console.log('paymentIntent =>', paymentIntent)
 
   const paymentIntentInput = document.createElement('input');
-  const paymentMethodInput = document.createElement('input');
 
   paymentIntentInput.setAttribute('type', 'hidden');
   paymentIntentInput.setAttribute('name', 'paymentIntentId');
   paymentIntentInput.setAttribute('value', paymentIntent.id);
 
+  form.appendChild(paymentIntentInput);
+}
+
+const stripePaymentMethodHandler = (paymentMethod) => {
+  const form = document.getElementById('payment-form');
+
+  const paymentMethodInput = document.createElement('input');
+
   paymentMethodInput.setAttribute('type', 'hidden');
   paymentMethodInput.setAttribute('name', 'paymentMethod');
-  paymentMethodInput.setAttribute('value', paymentIntent.payment_method);
+  paymentMethodInput.setAttribute('value', paymentMethod.id);
 
-  form.appendChild(paymentIntentInput);
   form.appendChild(paymentMethodInput);
 
-  form.submit();
+  form.submit()
 }
