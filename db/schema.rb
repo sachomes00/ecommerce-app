@@ -12,14 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2019_12_08_195720) do
 
-  create_table "customers", force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "customer_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "line_items", force: :cascade do |t|
     t.integer "product_id"
     t.integer "order_id"
